@@ -1,0 +1,12 @@
+
+#Java backend
+backend/*/.gradle
+backend/*/.vscode
+backend/*/build
+backend/*/bin
+
+#Mac os
+.DS_Store
+
+#Javascript modules
+node_modules/
