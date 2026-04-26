@@ -1,31 +1,24 @@
 
-<script setup>
+<script setup lang="ts">
 import { Pencil, Trash } from 'lucide-vue-next';
+import type { ExpenseCardProps } from './props';
 
-const props = defineProps({
-    title: String,
-    amount: {
-        value: Number,
-        uniCode: String
-    },
-    date: Date,
-    type: String
-})
+const props = defineProps<ExpenseCardProps>()
 </script>
 
 <template>
     <div class="expense-card d-flex justify-content-between align-items-center">
         <div>
-            <div class="expense-title">{{ title }}</div>
+            <div class="expense-title">{{ props.title }}</div>
             <div class="d-flex gap-2 align-items-center">
-                <div class="expense-type">{{ type }}</div>
-                <div class="expense-date">{{ date.toLocaleDateString() }}</div>                
+                <div class="expense-type">{{ props.type }}</div>
+                <div class="expense-date">{{ props.date.toLocaleDateString() }}</div>                
             </div>
         </div>
         <div class="d-flex gap-2 align-items-center">
-            <div class="expense-amount">{{ amount.uniCode }}{{ amount.value }}</div>
-            <button class="action-button"><Pencil size="15"/></button>
-            <button class="action-button"><Trash size="15" color="red"/></button>
+            <div class="expense-amount">{{ props.amount }}</div>
+            <button class="action-button"><Pencil :size="15"/></button>
+            <button class="action-button"><Trash :size="15" color="red"/></button>
         </div>
     </div>
 </template>

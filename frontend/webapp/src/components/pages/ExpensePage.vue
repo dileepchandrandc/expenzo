@@ -1,25 +1,15 @@
-<script setup>
-import { Search } from 'lucide-vue-next';
+<script setup lang="ts">
 import ExpenseCard from '../ExpenseCard.vue';
+import type { ExpenseCategory } from '../../models';
+import { onMounted, ref, type Ref } from 'vue';
+import { getExpenseCategories } from '../../api';
 
-const categories = [
-    {
-        'id': '1',
-        'name': 'Food & Drinks'
-    },
-    {
-        'id': '2',
-        'name': 'Transport'
-    },
-    {
-        'id': '3',
-        'name': 'Entertainment'
-    },
-    {
-        'id': '4',
-        'name': 'Bills'
-    }
-]
+const categories: Ref<ExpenseCategory[]> = ref<ExpenseCategory[]>([]);
+
+onMounted(async () => {
+  categories.value = await getExpenseCategories();
+  console.log(categories.value)
+})
 
 const buckets = [
     {
@@ -45,50 +35,35 @@ const expenses = {
     {
         'id': '1',
         'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
+        'amount': 50.00,
         'date': new Date(2024, 5, 1),
         'type': 'Food & Drinks'
     },
     {
         'id': '1',
         'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
+        'amount': 50.00,
         'date': new Date(2024, 5, 1),
         'type': 'Food & Drinks'
     },
     {
         'id': '1',
         'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
+        'amount': 50.00,
         'date': new Date(2024, 5, 1),
         'type': 'Food & Drinks'
     },
     {
         'id': '1',
         'title': 'Grocery',
-        'amount': {
-            'value': 50.15,
-            'uniCode': '$'
-        },
+        'amount': 50.15,
         'date': new Date(2024, 5, 1),
         'type': 'Food & Drinks'
     },
     {
         'id': '1',
         'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
+        'amount': 50.00,
         'date': new Date(2024, 5, 1),
         'type': 'Food & Drinks'
     }
@@ -100,10 +75,7 @@ const expenses = {
   <div class="expense-page">
     <div class="page-title">Expense</div>
     <div class="d-flex filter-bar gap-5">
-      <div class="filter-bar-item d-flex gap-0 align-items-center">
-        <Search/>
-        <input type="text" class="search-box" placeholder="Search for expenses"/>
-      </div>
+      <CleanSearchBox hint-text="Search for expenses" class="filter-bar-item" bg-color="transparent"/>
       <div class="filter-bar-item d-flex">
         <select class="filter-dropdown">
           <option v-for="category in categories" :value="category.id">{{ category.name }}</option>

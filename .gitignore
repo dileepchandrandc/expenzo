@@ -10,3 +10,6 @@ backend/*/bin
 
 #Javascript modules
 node_modules/
+
+#IDE
+.vscode/

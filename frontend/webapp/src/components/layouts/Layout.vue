@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Bell, User, LayoutDashboard, BanknoteArrowDown, PiggyBank} from 'lucide-vue-next'
 import { ref } from 'vue'
 const page = ref("dashboard")
@@ -8,7 +8,7 @@ const page = ref("dashboard")
   <div>
     <header class="layout-header d-flex justify-content-between align-items-center">
         <div class="d-flex flex-row align-items-center gap-1">
-            <div class="app-icon-container"><PiggyBank size="30"/></div>
+            <div class="app-icon-container"><PiggyBank :size="30"/></div>
             <div class="app-title">Expenzo</div>
         </div>
         <div class="d-flex gap-2">
@@ -21,19 +21,19 @@ const page = ref("dashboard")
             <div class="side-bar d-flex flex-column gap-2">
                 <router-link to="/" class="side-bar-button" :class="{ active: page === 'dashboard' }" @click="page = 'dashboard'">
                     <div class="d-flex gap-2 align-items-center">
-                        <div><LayoutDashboard size="20"/></div>
+                        <div><LayoutDashboard :size="20"/></div>
                         <div>Dashboard</div>
                     </div>
                 </router-link>
                 <router-link to="/expense" class="side-bar-button" :class="{ active: page === 'expense' }" @click="page = 'expense'">
                     <div class="d-flex gap-2 align-items-center">
-                        <div><BanknoteArrowDown size="20"/></div>
+                        <div><BanknoteArrowDown :size="20"/></div>
                         <div>Expense</div>
                     </div>
                 </router-link>
                 <router-link to="/profile" class="side-bar-button" :class="{ active: page === 'profile' }" @click="page = 'profile'">
                     <div class="d-flex gap-2 align-items-center">
-                        <div><User size="20"/></div>
+                        <div><User :size="20"/></div>
                         <div>Profile</div>
                     </div>
                 </router-link>

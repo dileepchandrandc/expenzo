@@ -1,55 +1,29 @@
+<script setup lang="ts">
+import {ref, onMounted} from 'vue';
+import { getExpenseGroupedByCategory } from '../api';
+import { CleanHorizondalBar } from './clean/components';
+import type { ExpenseByCategory } from '../models';
 
-<script setup>
-const expenseByCategory = [
-    {
-        'category': 'Food & Drinks',
-        'amount': {
-            'value': 150.00,
-            'uniCode': '$'
-        }
-    },
-    {
-        'category': 'Transportation',
-        'amount': {
-            'value': 80.00,
-            'uniCode': '$'
-        }
-    },
-    {
-        'category': 'Entertainment',
-        'amount': {
-            'value': 120.00,
-            'uniCode': '$'
-        }
-    },
-    {
-        'category': 'Health',
-        'amount': {
-            'value': 60.00,
-            'uniCode': '$'
-        }
-    },
-    {
-        'category': 'Education',
-        'amount': {
-            'value': 200.00,
-            'uniCode': '$'
-        }
+const expenseByCategory = ref<ExpenseByCategory[]>([])
+const max = ref(0)
+onMounted(async () => {
+    try {
+        expenseByCategory.value = await getExpenseGroupedByCategory()
+        max.value = Math.max(...expenseByCategory.value.map(e => e.amount))
+    } catch (err) {
+        console.error("API error:", err);
     }
-]
-const max = Math.max(...expenseByCategory.map(e => e.amount.value))
+})
 </script>
 
 <template>
     <div class="expense-by-category">
         <div class="title">Expenses by Category</div>
         <div class="d-flex flex-column gap-1">
-            <div v-for="item in expenseByCategory" :key="item.category" class="chart-row">
-            <div class="label">{{ item.category }}</div>
-            <div class="bar-container">
-                <div class="bar" :style="{ width: (item.amount.value / max * 100) + '%' }"></div>
-            </div>
-            <div class="value">{{ item.amount.uniCode }}{{ item.amount.value }}</div>
+            <div v-for="item in expenseByCategory" :key="item.categoryId" class="chart-row">
+                <div class="label">{{ item.categoryName }}</div>
+                <CleanHorizondalBar :value="item.amount" :max-value="max"/>
+                <div class="value">₹{{ item.amount }}</div>
             </div>
         </div>
     </div>
@@ -68,41 +42,26 @@ const max = Math.max(...expenseByCategory.map(e => e.amount.value))
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
-
-.chart {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .chart-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
-
 .label {
-  width: 100px;
+  flex: 0 1 150px;
+  min-width: 80px;
   font-size: 14px;
-}
-
-.bar-container {
-  flex: 1;
-  background: #eee;
-  height: 10px;
-  border-radius: 5px;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 .bar {
-  height: 100%;
-  background: #4dabf7;
-  border-radius: 5px;
+  flex: 1;
 }
-
 .value {
-  width: 60px;
+  flex: 0 0 auto;
+  min-width: 60px;
   text-align: right;
-  text-align: start;
+  white-space: nowrap;
 }
 </style>

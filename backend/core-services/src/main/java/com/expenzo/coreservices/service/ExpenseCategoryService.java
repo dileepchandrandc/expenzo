@@ -1,9 +1,8 @@
 package com.expenzo.coreservices.service;
 
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.expenzo.coreservices.dto.ExpenseCategoryDto;
@@ -19,9 +18,9 @@ public class ExpenseCategoryService {
 
     private final ExpenseCategoryRepository expenseCategoryRepository;
 
-    public PaginatedResponse<ExpenseCategoryDto> list(Integer userId, int page) {
-        Page<ExpenseCategory> bankAccounts = expenseCategoryRepository.findValidCategories(userId, PageRequest.of(page, 10));
-        return new PaginatedResponse<>(bankAccounts.stream().map(this::toDto).toList(), bankAccounts.hasNext());
+    public PaginatedResponse<ExpenseCategoryDto> list(Integer userId) {
+        List<ExpenseCategory> bankAccounts = expenseCategoryRepository.findValidCategories(userId);
+        return new PaginatedResponse<>(bankAccounts.stream().map(this::toDto).toList(), false);
     }
 
     public Optional<ExpenseCategoryDto> findById(Integer id, Integer userId) {

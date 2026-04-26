@@ -1,23 +1,15 @@
 
-<script setup>
-import { Currency } from 'lucide-vue-next';
+<script setup lang="ts">
+import type { OverViewCardProps } from './props';
 
-const overview = defineProps({
-    title: String,
-    amount: {
-        value: Number,
-        uniCode: String
-    },
-    bottomText: String,
-    icon: Object
-})
+const overview = defineProps<OverViewCardProps>()
 </script>
 
 <template>
     <div class="overview-card d-flex flex-column gap-3">
         <div class="overview-title">{{ overview.title }}</div>
         <div class="d-flex flex-column">
-            <div class="overview-value">{{ overview.amount.uniCode }}{{ overview.amount.value }}</div>
+            <div class="overview-value">₹{{ overview.amount }}</div>
             <div class="overview-bottom-text">{{ overview.bottomText }}</div>
         </div>
     </div>

@@ -1,26 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { X } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { getExpenseCategories } from '../api';
+import type { ExpenseCategory } from '../models';
 
-const categories = [
-    {
-        'id': '1',
-        'name': 'Food & Drinks'
-    },
-    {
-        'id': '2',
-        'name': 'Transport'
-    },
-    {
-        'id': '3',
-        'name': 'Entertainment'
-    },
-    {
-        'id': '4',
-        'name': 'Bills'
-    }
-]
+const categories = ref<ExpenseCategory[]>([])
 const transactionType = ref('expense');
+
+onMounted(async () => {
+    try {
+        categories.value = await getExpenseCategories()
+    } catch(err) {
+        console.error("API error:", err);
+    }
+});
 </script>
 
 <template>
