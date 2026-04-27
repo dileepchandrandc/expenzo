@@ -18,4 +18,5 @@ public class AddTransactionRequest {
     private Integer sourceId;
     private PaymentChannel destType;
     private Integer destId;
+    private TransactionMetaData metaData; //This can be used to mention the extra data required to form the transaction like expense category for expense
 }
