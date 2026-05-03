@@ -1,0 +1,54 @@
+package com.expenzo.services.model.transaction;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import com.expenzo.services.enums.PaymentChannel;
+import com.expenzo.services.enums.TransactionType;
+import com.expenzo.services.model.expense.ExpenseCategory;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "transaction")
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer userId;
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
+    private BigDecimal amount;
+    private String title;
+    private String description;
+    private LocalDateTime timestamp;
+    @Enumerated(EnumType.STRING)
+    private PaymentChannel sourceType;
+    private Integer sourceId;
+    @Enumerated(EnumType.STRING)
+    private PaymentChannel destType;
+    private Integer destId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "expense_category_id")
+    private ExpenseCategory expenseCategory;
+}

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: expenzo-services
+  datasource:
+    url: jdbc:postgresql://localhost:5432/swift?currentSchema=expenzo_v2
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+server:
+  port: 8080
+  servlet:
+    context-path: /expenzo-services

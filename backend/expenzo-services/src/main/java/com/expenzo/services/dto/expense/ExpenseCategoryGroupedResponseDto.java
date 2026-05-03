@@ -1,0 +1,20 @@
+package com.expenzo.services.dto.expense;
+
+import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExpenseCategoryGroupedResponseDto {
+
+    private ExpenseCategoryDto category;
+    private BigDecimal amount;
+}
