@@ -28,7 +28,7 @@ public class ExpenseRepository {
                     .id(resultSet.getInt("id"))
                     .amount(resultSet.getBigDecimal("amount"))
                     .title(resultSet.getString("title"))
-                    .title(resultSet.getString("description"))
+                    .description(resultSet.getString("description"))
                     .spentOn(resultSet.getTimestamp("timestamp").toLocalDateTime())
                     .paymetSourceType(PaymentChannel.valueOf(resultSet.getString("source_type")))
                     .paymentSourceId(resultSet.getInt("source_id"))
