@@ -3,7 +3,7 @@ import {ref, onMounted} from 'vue';
 import { getExpenseGroupedByCategory } from '../api';
 import type { ExpenseByCategory, YearMonth } from '../models';
 import { getCurrentYearAndMonth } from '../utils';
-import { Chart } from 'chart.js/auto';
+import { Chart, type ChartConfiguration } from 'chart.js/auto';
 
 const expenseByCategory = ref<ExpenseByCategory[]>([])
 const max = ref(0)
@@ -12,7 +12,7 @@ onMounted(async () => {
         const current: YearMonth = getCurrentYearAndMonth();
         expenseByCategory.value = await getExpenseGroupedByCategory(current.year, current.month)
         max.value = Math.max(...expenseByCategory.value.map(e => e.amount))
-        const ctx: HTMLCanvasElement = document.getElementsByClassName("category-graph")
+        const ctx : HTMLCanvasElement = document.getElementsByClassName("category-graph")[0] as HTMLCanvasElement
         const data = {
             labels: expenseByCategory.value.map(ec => ec.category.name),
             datasets: [
@@ -22,11 +22,11 @@ onMounted(async () => {
                 }
             ]
         }
-        const chartData = {
+        const chartConfig: ChartConfiguration<"doughnut"> = {
             type: "doughnut",
             data: data
         }
-        new Chart(ctx, chartData);
+        new Chart(ctx, chartConfig);
     } catch (err) {
         console.error("API error:", err);
     }
