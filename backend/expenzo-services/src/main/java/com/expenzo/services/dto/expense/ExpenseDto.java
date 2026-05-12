@@ -3,7 +3,7 @@ package com.expenzo.services.dto.expense;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.expenzo.services.enums.PaymentChannel;
+import com.expenzo.services.dto.payment.PaymentChannelDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,6 @@ public class ExpenseDto {
     private LocalDateTime spentOn;
     private String title;
     private String description;
-    private PaymentChannel paymetSourceType;
-    private Integer paymentSourceId;
     private ExpenseCategoryDto category;
+    private PaymentChannelDto paymentSource;
 }

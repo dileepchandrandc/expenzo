@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { Pencil, Trash } from 'lucide-vue-next';
 import type { ExpenseCardProps } from './props';
+import { getFormattedDate } from '../utils';
 
 const props = defineProps<ExpenseCardProps>()
 </script>
@@ -11,8 +12,8 @@ const props = defineProps<ExpenseCardProps>()
         <div>
             <div class="expense-title">{{ props.title }}</div>
             <div class="d-flex gap-2 align-items-center">
-                <div class="expense-type">{{ props.type }}</div>
-                <div class="expense-date">{{ props.date.toLocaleDateString() }}</div>                
+                <div class="expense-date">{{ getFormattedDate(props.date) }}</div>
+                <div class="expense-type" v-if="props.category != null">{{ props.category?.name }}</div>
             </div>
         </div>
         <div class="d-flex gap-2 align-items-center">

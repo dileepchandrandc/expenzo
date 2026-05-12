@@ -6,3 +6,9 @@ export interface CleanHorizndalProps {
     bgColor?: string;
     height?: number;
 }
+
+export interface CleanModalProps {
+    title?: string;
+    onClose: VoidFunction;
+    minWidth?: number;
+}

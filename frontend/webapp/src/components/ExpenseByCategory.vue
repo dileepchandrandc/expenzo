@@ -1,15 +1,32 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue';
 import { getExpenseGroupedByCategory } from '../api';
-import { CleanHorizondalBar } from './clean/components';
-import type { ExpenseByCategory } from '../models';
+import type { ExpenseByCategory, YearMonth } from '../models';
+import { getCurrentYearAndMonth } from '../utils';
+import { Chart } from 'chart.js/auto';
 
 const expenseByCategory = ref<ExpenseByCategory[]>([])
 const max = ref(0)
 onMounted(async () => {
     try {
-        expenseByCategory.value = await getExpenseGroupedByCategory()
+        const current: YearMonth = getCurrentYearAndMonth();
+        expenseByCategory.value = await getExpenseGroupedByCategory(current.year, current.month)
         max.value = Math.max(...expenseByCategory.value.map(e => e.amount))
+        const ctx: HTMLCanvasElement = document.getElementsByClassName("category-graph")
+        const data = {
+            labels: expenseByCategory.value.map(ec => ec.category.name),
+            datasets: [
+                {
+                    data: expenseByCategory.value.map(ec => ec.amount),
+                    hoverOffset: 4
+                }
+            ]
+        }
+        const chartData = {
+            type: "doughnut",
+            data: data
+        }
+        new Chart(ctx, chartData);
     } catch (err) {
         console.error("API error:", err);
     }
@@ -19,13 +36,7 @@ onMounted(async () => {
 <template>
     <div class="expense-by-category">
         <div class="title">Expenses by Category</div>
-        <div class="d-flex flex-column gap-1">
-            <div v-for="item in expenseByCategory" :key="item.categoryId" class="chart-row">
-                <div class="label">{{ item.categoryName }}</div>
-                <CleanHorizondalBar :value="item.amount" :max-value="max"/>
-                <div class="value">₹{{ item.amount }}</div>
-            </div>
-        </div>
+        <canvas class="category-graph"></canvas>
     </div>
 
 </template>
@@ -42,26 +53,7 @@ onMounted(async () => {
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
-.chart-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.label {
-  flex: 0 1 150px;
-  min-width: 80px;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.bar {
-  flex: 1;
-}
-.value {
-  flex: 0 0 auto;
-  min-width: 60px;
-  text-align: right;
-  white-space: nowrap;
+.category-graph {
+    max-height: 400px;
 }
 </style>

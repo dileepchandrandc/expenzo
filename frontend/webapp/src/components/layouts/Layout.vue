@@ -19,19 +19,19 @@ const page = ref("dashboard")
     <main>
         <div class="d-flex">
             <div class="side-bar d-flex flex-column gap-2">
-                <router-link to="/" class="side-bar-button" :class="{ active: page === 'dashboard' }" @click="page = 'dashboard'">
+                <router-link to="/" class="side-bar-button" @click="page = 'dashboard'">
                     <div class="d-flex gap-2 align-items-center">
                         <div><LayoutDashboard :size="20"/></div>
                         <div>Dashboard</div>
                     </div>
                 </router-link>
-                <router-link to="/expense" class="side-bar-button" :class="{ active: page === 'expense' }" @click="page = 'expense'">
+                <router-link to="/expense" class="side-bar-button" @click="page = 'expense'">
                     <div class="d-flex gap-2 align-items-center">
                         <div><BanknoteArrowDown :size="20"/></div>
                         <div>Expense</div>
                     </div>
                 </router-link>
-                <router-link to="/profile" class="side-bar-button" :class="{ active: page === 'profile' }" @click="page = 'profile'">
+                <router-link to="/profile" class="side-bar-button" @click="page = 'profile'">
                     <div class="d-flex gap-2 align-items-center">
                         <div><User :size="20"/></div>
                         <div>Profile</div>
@@ -93,7 +93,7 @@ const page = ref("dashboard")
     font-size:small;
 }
 
-.side-bar-button.active {
+.side-bar-button.router-link-exact-active {
     background-color: rgba(98, 98, 98, 0.1);
     border-radius: 10px;
     color: #000;

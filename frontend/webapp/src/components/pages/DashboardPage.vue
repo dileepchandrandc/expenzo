@@ -3,20 +3,22 @@ import ExpenseByCategory from '../ExpenseByCategory.vue';
 import RecentExpenseList from '../RecentExpenseList.vue'
 import OverViewCard from '../OverViewCard.vue';
 import AddTransactionModal from '../AddTransactionModal.vue';
-import { ref, onMounted } from 'vue';
-import { getDashboradOverview } from '../../api';
-import type { ExpenseOverview } from '../../models';
+import { ref, onMounted, type Ref } from 'vue';
+import { getMonthlyOverview } from '../../api';
+import type { MonthlyExpenseOverview } from '../../models';
+import { getCurrentYearAndMonth } from '../../utils';
 
 const showModal = ref(false);
-const monthlyOverView = ref<ExpenseOverview>({
+const monthlyOverView: Ref<MonthlyExpenseOverview> = ref<MonthlyExpenseOverview>({
     income: 0,
     expense: 0,
     bill: 0,
-    averagePerDay: 0
+    avgSpentPerDay: 0
 });
 onMounted(async () => {
-    try {   
-        monthlyOverView.value = await getDashboradOverview();
+    try {
+        const current = getCurrentYearAndMonth();
+        monthlyOverView.value = await getMonthlyOverview(current.year, current.month);
     } catch(err) {
         console.error("API error:", err);
     }
@@ -31,8 +33,8 @@ onMounted(async () => {
     <div class="d-flex gap-4 p-0 mb-4 mt-2">
         <OverViewCard :title="'Income'" :amount="monthlyOverView.income" :bottomText="'Total income for the month'" />
         <OverViewCard :title="'Expense'" :amount="monthlyOverView.expense" :bottomText="'Total expense for the month'" />
-        <OverViewCard :title="'Bills'" :amount="monthlyOverView.bill" :bottomText="'Total bills for the month'" />
-        <OverViewCard :title="'Average Spend Per Day'" :amount="monthlyOverView.averagePerDay" :bottomText="'Average spend per day for the month'" />
+        <!-- <OverViewCard :title="'Bills'" :amount="monthlyOverView.bill" :bottomText="'Total bills for the month'" /> -->
+        <OverViewCard :title="'Average Spend Per Day'" :amount="monthlyOverView.avgSpentPerDay" :bottomText="'Average spend per day for the month'" />
     </div>
     <div class="container-fuild">
       <div class="row g-3">

@@ -1,58 +1,16 @@
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import type { Expense, YearMonth } from '../models';
+import { getExpenses } from '../api';
+import { getCurrentYearAndMonth, getFormattedDate } from '../utils';
 
-const recentExpenses = [
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': {
-            'value': 50.15,
-            'uniCode': '$'
-        },
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': {
-            'value': 50.00,
-            'uniCode': '$'
-        },
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    }
-]
+const recentExpenses = ref<Expense[]>([]);
+onMounted(async() => {
+    const current: YearMonth = getCurrentYearAndMonth();
+    const res = await getExpenses(current.year, current.month, undefined, 0, 5);
+    recentExpenses.value = res.data;
+});
 </script>
 
 <template>
@@ -63,12 +21,12 @@ const recentExpenses = [
                 <div>
                     <div class="expense-title">{{ expense.title }}</div>
                     <div class="d-flex gap-2">
-                        <div class="expense-date">{{ expense.date.toLocaleDateString() }}</div>
-                        <div class="expense-type">{{ expense.type }}</div>
+                        <div class="expense-date">{{ getFormattedDate(expense.spentOn) }}</div>
+                        <div class="expense-type">{{ expense.category?.name }}</div>
                     </div>
                 </div>
                 <div>
-                    <div class="expense-amount">{{ expense.amount.uniCode }}{{ expense.amount.value }}</div>
+                    <div class="expense-amount">{{ expense.amount }}₹</div>
                 </div>
             </div>
         </div>

@@ -1,73 +1,48 @@
 <script setup lang="ts">
-import ExpenseCard from '../ExpenseCard.vue';
-import type { ExpenseCategory } from '../../models';
+import type { Expense, ExpenseBucket, ExpenseCategory } from '../../models';
 import { onMounted, ref, type Ref } from 'vue';
-import { getExpenseCategories } from '../../api';
+import { getExpenseCategories, getExpenseBuckets } from '../../api';
+import ExpenseListView from '../ExpenseListView.vue';
+import ExpenseModal from '../ExpenseModal.vue';
+
+interface PageState {
+  bucket?: ExpenseBucket;
+  category?: ExpenseCategory;
+  page: number;
+  size: number;
+  hasNext: boolean;
+}
+interface ExpenseModalState {
+  show: boolean;
+  expense?: Expense;
+}
 
 const categories: Ref<ExpenseCategory[]> = ref<ExpenseCategory[]>([]);
+const buckets: Ref<ExpenseBucket[]> = ref<ExpenseBucket[]>([]);
+const pageState: Ref<PageState> = ref({
+  page: 0,
+  size: 10,
+  hasNext: true
+});
+const showExpenseModal: Ref<ExpenseModalState> = ref({
+  show: false
+});
 
 onMounted(async () => {
   categories.value = await getExpenseCategories();
-  console.log(categories.value)
+  buckets.value = await getExpenseBuckets();
+  pageState.value.bucket = buckets.value[0] //Setting the firt bucket as initial bucket
+  console.log("Month from parent = " + pageState.value.bucket.month)
 })
 
-const buckets = [
-    {
-        'id': '5-2025',
-        'name': 'May 2024'
-    },
-    {
-        'id': '6-2025',
-        'name': 'June 2024'
-    },
-    {
-        'id': '7-2025',
-        'name': 'July 2024'
-    }
-]
-const expenses = {
-  'total': 5,
-  'totalAmount': {
-    'value': 250.00,
-    'uniCode': '$'
-  },
-  'data': [
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': 50.00,
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': 50.00,
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': 50.00,
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': 50.15,
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    },
-    {
-        'id': '1',
-        'title': 'Grocery',
-        'amount': 50.00,
-        'date': new Date(2024, 5, 1),
-        'type': 'Food & Drinks'
-    }
-  ]
+const selectExpense = (expense: Expense) => {
+  showExpenseModal.value.expense = expense;
+  showExpenseModal.value.show = true;
+}
+
+const closeExpenseModal = () => {
+  showExpenseModal.value.expense = undefined;
+  showExpenseModal.value.show = false;
 }
 </script>
 
@@ -75,28 +50,28 @@ const expenses = {
   <div class="expense-page">
     <div class="page-title">Expense</div>
     <div class="d-flex filter-bar gap-5">
-      <CleanSearchBox hint-text="Search for expenses" class="filter-bar-item" bg-color="transparent"/>
+      <!-- <CleanSearchBox hint-text="Search for expenses" class="filter-bar-item" bg-color="transparent"/> -->
       <div class="filter-bar-item d-flex">
-        <select class="filter-dropdown">
-          <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+        <select class="filter-dropdown" v-model="pageState.category">
+          <option :value="undefined">All Categories</option>
+          <option v-for="category in categories" :value="category" :key="category.id">{{ category.name }}</option>
          </select>
       </div>
       <div class="filter-bar-item d-flex">
-        <select class="filter-dropdown">
-          <option v-for="bucket in buckets" :value="bucket.id">{{ bucket.name }}</option>
+        <select class="filter-dropdown" v-model="pageState.bucket">
+          <option v-for="b in buckets" :value="b" >{{ b.name }}</option>
         </select>
       </div>
     </div>
     <div class="d-flex justify-content-between mt-4">
-      <div>Total Expenses: {{ expenses.total }}</div>
+      <div>Total Expenses: 10</div>
       <div class="d-flex gap-1 align-items-center ml-4">
         <div>Total Amount:</div>
-        <div>{{ expenses.totalAmount.uniCode }}{{ expenses.totalAmount.value }}</div>
+        <div>₹100</div>
       </div>
     </div>
-    <div class="expense-list d-flex flex-column gap-2 mt-3">
-      <ExpenseCard v-for="expense in expenses['data']" :key="expense.id" :title="expense.title" :amount="expense.amount" :date="expense.date" :type="expense.type"/>
-    </div>
+    <ExpenseListView v-if="pageState.bucket != undefined" :year="pageState.bucket?.year" :month="pageState.bucket?.month" :category-id="pageState.category?.id" :select-expense="selectExpense"/>
+    <ExpenseModal v-if="showExpenseModal.show && showExpenseModal.expense != undefined" :expense="showExpenseModal.expense" v-on:close="closeExpenseModal"/>
   </div>
 </template>
 
