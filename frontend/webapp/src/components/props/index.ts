@@ -24,3 +24,7 @@ export interface ExpenseModalProps {
     expense: Expense,
     onClose: VoidFunction
 }
+
+export interface AddTransactionModalProps {
+    onClose: VoidFunction
+}

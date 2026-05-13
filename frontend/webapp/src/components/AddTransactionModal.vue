@@ -3,9 +3,15 @@ import { X } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { getExpenseCategories } from '../api';
 import type { ExpenseCategory } from '../models';
+import type { AddTransactionModalProps } from './props';
 
+const props = defineProps<AddTransactionModalProps>();
 const categories = ref<ExpenseCategory[]>([])
 const transactionType = ref('expense');
+
+const closeModal = () => {
+    props.onClose();
+}
 
 onMounted(async () => {
     try {
@@ -21,7 +27,7 @@ onMounted(async () => {
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between align-items-center">
                 <div class="modal-title">Add Transaction</div>
-                <button class="close-button"><X /></button>
+                <button class="close-button" @click="closeModal"><X /></button>
             </div>
             <div class="modal-body d-flex flex-column gap-3 mt-3">
                 <div class="d-flex justify-content-between">

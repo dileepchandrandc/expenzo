@@ -7,14 +7,24 @@ import { ref, onMounted, type Ref } from 'vue';
 import { getMonthlyOverview } from '../../api';
 import type { MonthlyExpenseOverview } from '../../models';
 import { getCurrentYearAndMonth } from '../../utils';
+import { Plus } from 'lucide-vue-next';
 
-const showModal = ref(false);
+const addtransactionModal = ref(false);
 const monthlyOverView: Ref<MonthlyExpenseOverview> = ref<MonthlyExpenseOverview>({
     income: 0,
     expense: 0,
     bill: 0,
     avgSpentPerDay: 0
 });
+
+const showAddTransactionModal = () => {
+    addtransactionModal.value = true
+}
+
+const closeAddTransactionModal = () => {
+    addtransactionModal.value = false
+}
+
 onMounted(async () => {
     try {
         const current = getCurrentYearAndMonth();
@@ -26,9 +36,12 @@ onMounted(async () => {
 </script>
 
 <template>
-    <AddTransactionModal v-if="showModal"/>
+    <AddTransactionModal v-if="addtransactionModal" v-on:close="closeAddTransactionModal"/>
     <div class="dashboard-page container-fluid">
-    <div class="page-title">Dashboard</div>
+    <div class="d-flex justify-content-between">
+        <div class="page-title">Dashboard</div>
+        <button @click="showAddTransactionModal" class="add-transaction-button"><Plus/> Add Transaction</button>
+    </div>
     <div class="dashbord-section-title">Expense Overview</div>
     <div class="d-flex gap-4 p-0 mb-4 mt-2">
         <OverViewCard :title="'Income'" :amount="monthlyOverView.income" :bottomText="'Total income for the month'" />
@@ -62,5 +75,16 @@ onMounted(async () => {
 .dashbord-section-title{
     font-size: 1rem;
     margin-top: 1rem;
+}
+
+.add-transaction-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid grey;
+    border-radius: 20px;
+    padding: 10px;
+    color: white;
+    background-color: rgb(60, 127, 69);
 }
 </style>
