@@ -1,4 +1,4 @@
-import type { Expense, ExpenseCategory } from "../../models";
+import type { BankAccount, BankingCard, Expense, ExpenseCategory } from "../../models";
 
 export interface OverViewCardProps {
     title: string,
@@ -27,4 +27,12 @@ export interface ExpenseModalProps {
 
 export interface AddTransactionModalProps {
     onClose: VoidFunction
+}
+
+export interface BankAccountCardProps {
+    bankAccount: BankAccount;
+}
+
+export interface BankingCardComponentProps {
+    bankingCard: BankingCard;
 }

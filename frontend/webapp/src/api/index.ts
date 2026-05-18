@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import type { ExpenseBucket, ExpenseByCategory, ExpenseCategory, ExpenseCategoryResponse, MonthlyExpenseOverview, ExpenseResponse } from "../models";
+import type { ExpenseBucket, ExpenseByCategory, ExpenseCategory, ExpenseCategoryResponse, MonthlyExpenseOverview, ExpenseResponse, BankingCard, BankAccount } from "../models";
 
 const api = axios.create({
   baseURL: "http://localhost:8080/expenzo-services",
@@ -34,5 +34,20 @@ export const getExpenses = async(year: number, month: number, categoryId: number
 
 export const getExpenseBuckets = async() => {
   const res = await api.get<ExpenseBucket[]>("/expense/bucket");
+  return res.data;
+}
+
+export const getBankAccounts = async() => {
+  const res = await api.get<BankAccount[]>("/bank-account/list");
+  return res.data;
+}
+
+export const getCreditCards = async() => {
+  const res = await api.get<BankingCard[]>("/debit-card/list"); 
+  return res.data;
+}
+
+export const getDebitCards = async() => {
+  const res = await api.get<BankingCard[]>("/credit-card/list");
   return res.data;
 }

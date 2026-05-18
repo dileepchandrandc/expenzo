@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.expenzo.services.dto.payment.BankAccountDto;
 import com.expenzo.services.dto.payment.BankDto;
 import com.expenzo.services.dto.payment.DebitCardDto;
-import com.expenzo.services.dto.PaginatedResponse;
 import com.expenzo.services.model.payment.DebitCard;
 import com.expenzo.services.repository.DebitCardRepository;
 
@@ -19,9 +18,9 @@ public class DebitCardService {
 
     private final DebitCardRepository debitCardRepository;
 
-    public PaginatedResponse<DebitCardDto> list(Integer userId, int page) {
+    public List<DebitCardDto> list(Integer userId) {
         List<DebitCard> debitCards = debitCardRepository.findByUserId(userId);
-        return new PaginatedResponse<>(debitCards.stream().map(this::toDto).toList(), false);
+        return debitCards.stream().map(this::toDto).toList();
     }
 
     public boolean checkDebitCardExists(Integer useerId, Integer id) {

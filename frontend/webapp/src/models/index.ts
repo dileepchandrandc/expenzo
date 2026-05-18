@@ -54,3 +54,22 @@ export interface PaymentChannelDetails {
     bankName: string;
     bankAccountName: string;
 }
+
+export interface Bank {
+    id: number;
+    name: string;
+}
+
+export interface BankAccount {
+    id: number;
+    bank: Bank;
+    nickName?: string;
+    accountType: string;
+}
+
+export interface BankingCard {
+    id: number;
+    bankAccount: BankAccount;
+    nickName?: string;
+    type: string;
+}
