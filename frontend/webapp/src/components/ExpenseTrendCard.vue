@@ -8,8 +8,8 @@ import ExpenseByCategory from './ExpenseByCategory.vue';
         <div class="title">Expense Trend</div>
         <div class="container">
             <div class="row g-3 align-items-end">
-                <div class="col-md-6"><DailySpendingChart /></div>
-                <div class="col-md-6"><ExpenseByCategory /></div>
+                <div class="col"><DailySpendingChart /></div>
+                <div class="col"><ExpenseByCategory /></div>
             </div>
         </div>
     </div>

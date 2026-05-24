@@ -36,7 +36,7 @@ const progressColor = computed(() => {
 
 <style scoped>
 .usage-bar {
-  width: v-bind(barWidth);
+  min-width: v-bind(barWidth);
   background-color: v-bind(bgColor);
   height: 5px;
 }

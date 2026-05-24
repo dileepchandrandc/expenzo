@@ -78,25 +78,27 @@ const getProgressBarColor = (usage: number) => {
               <div>₹{{ budgetSummary.uncategorizedSpent }}</div>
             </div>
           </div>
-          <div class="d-flex align-items-center gap-3">
-            <div>
-              <canvas class="budget-usage-chart"></canvas>
-              <div class="d-flex flex-column align-items-center justify-content-center">
-                <div class="remaining-amount">{{ budgetSummary.budgetLimit - budgetSummary.totalSpent }}</div>
-                <div class="remaining-text">Remaining</div>
+          <div class="container gap-3">
+            <div class="row">
+              <div class="col-auto">
+                <canvas class="budget-usage-chart"></canvas>
+                <div class="d-flex flex-column align-items-center justify-content-center">
+                  <div class="remaining-amount">₹{{ budgetSummary.budgetLimit - budgetSummary.totalSpent }}</div>
+                  <div class="remaining-text">Remaining</div>
+                </div>
               </div>
-            </div>
-            <div>
-              <div v-for="categorySummary in budgetSummary.utilizations" class="d-flex flex-column gap-1 category-budget-summary">
-                <div v-if="categorySummary.partOfBudget">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="category-name">{{ categorySummary.categoryName }}</div>
-                    <div class="budget-usage">{{ categorySummary.budgetUsage }}%</div>
-                  </div>
-                  <ProgresBar :progress="categorySummary.budgetUsage" :min-bar-width="300" :color="getProgressBarColor(categorySummary.budgetUsage)"/>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="budget-used-amount">{{ categorySummary.totalSpent }} / {{ categorySummary.spendLimit }}</div>
-                    <div class="over-spending-card" v-if="categorySummary.budgetUsage > 100">Over</div>
+              <div class="col">
+                <div v-for="categorySummary in budgetSummary.utilizations" class="d-flex flex-column gap-1 category-budget-summary">
+                  <div v-if="categorySummary.partOfBudget">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="category-name">{{ categorySummary.categoryName }}</div>
+                      <div class="budget-usage">{{ categorySummary.budgetUsage }}%</div>
+                    </div>
+                    <ProgresBar :progress="categorySummary.budgetUsage" :min-bar-width="300" :color="getProgressBarColor(categorySummary.budgetUsage)"/>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="budget-used-amount">{{ categorySummary.totalSpent }} / {{ categorySummary.spendLimit }}</div>
+                      <div class="over-spending-card" v-if="categorySummary.budgetUsage > 100">Over</div>
+                    </div>
                   </div>
                 </div>
               </div>

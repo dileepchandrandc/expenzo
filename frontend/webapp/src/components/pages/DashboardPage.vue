@@ -52,11 +52,11 @@ onMounted(async () => {
         </div>
         <div class="container-fluid">
             <div class="row g-3">
-                <div class="col-auto"><RecentExpenseList /></div>
-                <div class="col"><ExpenseTrendCard/></div>
+                <div class="col"><RecentExpenseList /></div>
+                <div class="col"><BudgetSummary /></div>
             </div>
             <div class="row g-3 mt-1">
-                <div class="col-auto"><BudgetSummary /></div>
+                <div class="col"><ExpenseTrendCard/></div>
             </div>
         </div>
     </div>
