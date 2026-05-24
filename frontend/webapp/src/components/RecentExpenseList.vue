@@ -18,7 +18,7 @@ onMounted(async() => {
         <div class="title">Recent Expenses</div>
         <div class="d-flex flex-column gap-1">
             <div v-for="expense in recentExpenses" :key="expense.id" class="expense d-flex justify-content-between align-items-center">
-                <div>
+                <div class="d-flex flex-column align-items-start">
                     <div class="expense-title">{{ expense.title }}</div>
                     <div class="d-flex gap-2">
                         <div class="expense-date">{{ getFormattedDate(expense.spentOn) }}</div>
@@ -50,6 +50,7 @@ onMounted(async() => {
     margin-bottom: 0.5rem;
     width: 100%;
     border-bottom: #666 1px solid;
+    min-width: 500px;
 }
 
 .expense:last-child{

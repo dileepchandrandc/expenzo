@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ExpenseByCategory from '../ExpenseByCategory.vue';
 import RecentExpenseList from '../RecentExpenseList.vue'
 import OverViewCard from '../OverViewCard.vue';
 import AddTransactionModal from '../AddTransactionModal.vue';
@@ -8,6 +7,8 @@ import { getMonthlyOverview } from '../../api';
 import type { MonthlyExpenseOverview } from '../../models';
 import { getCurrentYearAndMonth } from '../../utils';
 import { Plus } from 'lucide-vue-next';
+import ExpenseTrendCard from '../ExpenseTrendCard.vue';
+import BudgetSummary from '../BudgetSummary.vue';
 
 const addtransactionModal = ref(false);
 const monthlyOverView: Ref<MonthlyExpenseOverview> = ref<MonthlyExpenseOverview>({
@@ -38,27 +39,26 @@ onMounted(async () => {
 <template>
     <AddTransactionModal v-if="addtransactionModal" v-on:close="closeAddTransactionModal"/>
     <div class="dashboard-page container-fluid">
-    <div class="d-flex justify-content-between">
-        <div class="page-title">Dashboard</div>
-        <button @click="showAddTransactionModal" class="add-transaction-button"><Plus/> Add Transaction</button>
-    </div>
-    <div class="dashbord-section-title">Expense Overview</div>
-    <div class="d-flex gap-4 p-0 mb-4 mt-2">
-        <OverViewCard :title="'Income'" :amount="monthlyOverView.income" :bottomText="'Total income for the month'" />
-        <OverViewCard :title="'Expense'" :amount="monthlyOverView.expense" :bottomText="'Total expense for the month'" />
-        <!-- <OverViewCard :title="'Bills'" :amount="monthlyOverView.bill" :bottomText="'Total bills for the month'" /> -->
-        <OverViewCard :title="'Average Spend Per Day'" :amount="monthlyOverView.avgSpentPerDay" :bottomText="'Average spend per day for the month'" />
-    </div>
-    <div class="container-fuild">
-      <div class="row g-3">
-        <div class="col">
-            <RecentExpenseList />
+        <div class="d-flex justify-content-between">
+            <div class="page-title">Dashboard</div>
+            <button @click="showAddTransactionModal" class="add-transaction-button"><Plus/> Add Transaction</button>
         </div>
-        <div class="col">
-            <ExpenseByCategory />
+        <div class="dashbord-section-title">Expense Overview</div>
+        <div class="d-flex gap-4 p-0 mb-4 mt-2">
+            <OverViewCard :title="'Income'" :amount="monthlyOverView.income" :bottomText="'Total income for the month'" />
+            <OverViewCard :title="'Expense'" :amount="monthlyOverView.expense" :bottomText="'Total expense for the month'" />
+            <!-- <OverViewCard :title="'Bills'" :amount="monthlyOverView.bill" :bottomText="'Total bills for the month'" /> -->
+            <OverViewCard :title="'Average Spend Per Day'" :amount="monthlyOverView.avgSpentPerDay" :bottomText="'Average spend per day for the month'" />
         </div>
-      </div>
-    </div>
+        <div class="container-fluid">
+            <div class="row g-3">
+                <div class="col-auto"><RecentExpenseList /></div>
+                <div class="col"><ExpenseTrendCard/></div>
+            </div>
+            <div class="row g-3 mt-1">
+                <div class="col-auto"><BudgetSummary /></div>
+            </div>
+        </div>
     </div>
 </template>
 

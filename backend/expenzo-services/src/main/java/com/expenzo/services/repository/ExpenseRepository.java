@@ -2,12 +2,14 @@ package com.expenzo.services.repository;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.expenzo.services.dto.expense.DailySpendingTrendDto;
 import com.expenzo.services.dto.expense.ExpenseBucketDto;
 import com.expenzo.services.dto.expense.ExpenseCategoryDto;
 import com.expenzo.services.dto.expense.ExpenseCategoryGroupedResponseDto;
@@ -16,14 +18,19 @@ import com.expenzo.services.dto.expense.MonthlyExpenseOverview;
 import com.expenzo.services.dto.payment.PaymentChannelDto;
 import com.expenzo.services.enums.PaymentChannel;
 import com.expenzo.services.repository.query.ExpnseQueries;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ExpenseRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ObjectMapper objectMapper;
 
     private final RowMapper<ExpenseDto> expenseMapper = (resultSet, rowNum) -> {
         return ExpenseDto.builder()
@@ -101,5 +108,25 @@ public class ExpenseRepository {
                     .build();
             }, 
             day, userId, startDate, endDate);
+    }
+
+    public List<DailySpendingTrendDto> getDailySpendingTrend(Integer userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jdbcTemplate.query(ExpnseQueries.FETCH_DAILY_SPENDING_TREND,
+            (resultSet, rowNum) -> {
+                List<ExpenseDto> expenses = new ArrayList<>();
+                try {
+                    expenses = objectMapper.readValue(resultSet.getString("transactions"),  new TypeReference<List<ExpenseDto>>() {});
+                } catch(Exception e) {
+                    log.error("Failed to map json array into expense list");
+                    e.printStackTrace();
+                }
+                return DailySpendingTrendDto.builder()
+                    .day(resultSet.getInt("day"))
+                    .totalAmountSpent(resultSet.getBigDecimal("total_spent"))
+                    .expenses(expenses)
+                    .build();
+            }, 
+            userId, startDate, endDate
+        );
     }
 }

@@ -73,3 +73,31 @@ export interface BankingCard {
     nickName?: string;
     type: string;
 }
+
+export interface DailySpendingTrend {
+    day: number;
+    totalAmountSpent: number;
+    expenses: Expense[];
+}
+
+export interface BudgetSummary {
+    budgetId: number;
+    budgetName: string;
+    budgetLimit: number;
+    totalSpent: number;
+    utilizations: BudgetCategory[];
+    untrackedSpent: number;
+    uncategorizedSpent: number;
+    budgetUsage: number;
+    untrackedUsage: number;
+    uncategorizedUsage: number;
+}
+
+export interface BudgetCategory {
+    categoryId: number;
+    categoryName: string;
+    spendLimit: number;
+    totalSpent: number;
+    budgetUsage: number;
+    partOfBudget: boolean;
+}

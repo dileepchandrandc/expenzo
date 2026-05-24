@@ -2,7 +2,6 @@ package com.expenzo.services.controller;
 
 import java.util.List;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.expenzo.services.dto.PaginatedResponse;
+import com.expenzo.services.dto.expense.DailySpendingTrendDto;
 import com.expenzo.services.dto.expense.ExpenseBucketDto;
 import com.expenzo.services.dto.expense.ExpenseCategoryGroupedResponseDto;
 import com.expenzo.services.dto.expense.ExpenseDto;
@@ -47,5 +47,11 @@ public class ExpenseController {
     public MonthlyExpenseOverview getMonthlyOverview(@RequestHeader("user-id") Integer userId, 
         @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
         return expenseService.getMonthlyOverview(userId, year, month);
+    }
+
+    @GetMapping("spend-trend/daily/year/{year}/month/{month}")
+    public List<DailySpendingTrendDto> getDailySpendigTrend(@RequestHeader("user-id") Integer userId, 
+        @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
+            return expenseService.getDailySpendingTrend(userId, year, month);
     }
 }

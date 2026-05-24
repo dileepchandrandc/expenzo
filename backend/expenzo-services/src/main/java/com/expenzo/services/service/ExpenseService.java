@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.expenzo.services.dto.PaginatedResponse;
+import com.expenzo.services.dto.expense.DailySpendingTrendDto;
 import com.expenzo.services.dto.expense.ExpenseBucketDto;
 import com.expenzo.services.dto.expense.ExpenseCategoryGroupedResponseDto;
 import com.expenzo.services.dto.expense.ExpenseDto;
@@ -44,5 +45,10 @@ public class ExpenseService {
     public MonthlyExpenseOverview getMonthlyOverview(Integer userId, Integer year, Integer month) {
         LocalDateTime[] startEndDates = DateTimeUtils.getBoundaryDateTimes(year, month);
         return expenseRepository.getMonthlyExpenseOverview(userId, startEndDates[0], startEndDates[1], 8);
+    }
+
+    public List<DailySpendingTrendDto> getDailySpendingTrend(Integer userId, Integer year, Integer month) {
+        LocalDateTime[] startEndDates = DateTimeUtils.getBoundaryDateTimes(year, month);
+        return expenseRepository.getDailySpendingTrend(userId, startEndDates[0], startEndDates[1]);
     }
 }

@@ -110,4 +110,18 @@ public class ExpnseQueries {
             and t.timestamp >= ?
             and t.timestamp <= ?;
     """;
+    public static final String FETCH_DAILY_SPENDING_TREND = """
+        select
+            extract(day from t."timestamp") as day,
+            sum(t.amount) as total_spent,
+            json_agg(json_build_object('id', t.id, 'title', t.title)) as transactions
+        from
+            "transaction" t 
+        where
+            t.user_id  = ?
+            and t.timestamp >= ?
+            and t.timestamp <= ?
+        group by extract(day from t."timestamp")
+        order by extract(day from t."timestamp");
+    """;
 }

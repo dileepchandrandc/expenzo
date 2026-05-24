@@ -6,12 +6,10 @@ import { getCurrentYearAndMonth } from '../utils';
 import { Chart, type ChartConfiguration } from 'chart.js/auto';
 
 const expenseByCategory = ref<ExpenseByCategory[]>([])
-const max = ref(0)
 onMounted(async () => {
     try {
         const current: YearMonth = getCurrentYearAndMonth();
         expenseByCategory.value = await getExpenseGroupedByCategory(current.year, current.month)
-        max.value = Math.max(...expenseByCategory.value.map(e => e.amount))
         const ctx : HTMLCanvasElement = document.getElementsByClassName("category-graph")[0] as HTMLCanvasElement
         const data = {
             labels: expenseByCategory.value.map(ec => ec.category.name),
@@ -34,25 +32,13 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="expense-by-category">
-        <div class="title">Expenses by Category</div>
-        <canvas class="category-graph"></canvas>
+    <div class="d-flex flex-column align-items-center">
+      <canvas class="category-graph"></canvas>
+      <div>Expense By Category</div>
     </div>
-
 </template>
 
 <style scoped>
-.expense-by-category{
-    background-color: white;
-    padding: 1rem;
-    border-radius: 10px;
-}
-
-.title{
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
 .category-graph {
     max-height: 400px;
 }

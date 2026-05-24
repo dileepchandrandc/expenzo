@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import type { ExpenseBucket, ExpenseByCategory, ExpenseCategory, ExpenseCategoryResponse, MonthlyExpenseOverview, ExpenseResponse, BankingCard, BankAccount } from "../models";
+import type { ExpenseBucket, ExpenseByCategory, ExpenseCategory, ExpenseCategoryResponse, MonthlyExpenseOverview, ExpenseResponse, BankingCard, BankAccount, DailySpendingTrend, BudgetSummary } from "../models";
 
 const api = axios.create({
   baseURL: "http://localhost:8080/expenzo-services",
@@ -49,5 +49,15 @@ export const getCreditCards = async() => {
 
 export const getDebitCards = async() => {
   const res = await api.get<BankingCard[]>("/credit-card/list");
+  return res.data;
+}
+
+export const getDailySpendingTrend = async(year: number, month: number) => {
+  const res = await api.get<DailySpendingTrend[]>(`expense/spend-trend/daily/year/${year}/month/${month}`);
+  return res.data;
+}
+
+export const getBudgetSummary = async(year: number, month: number) => {
+  const res = await api.get<BudgetSummary>(`budget/summary/year/${year}/month/${month}`);
   return res.data;
 }
