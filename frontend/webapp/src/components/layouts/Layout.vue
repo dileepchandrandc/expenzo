@@ -31,6 +31,12 @@ const page = ref("dashboard")
                         <div>Expense</div>
                     </div>
                 </router-link>
+                <router-link to="/budget" class="side-bar-button" @click="page = 'budget'">
+                    <div class="d-flex gap-2 align-items-center">
+                        <div><BanknoteArrowDown :size="20"/></div>
+                        <div>Budget</div>
+                    </div>
+                </router-link>
                 <router-link to="/payment-channel" class="side-bar-button" @click="page = 'payment-channel'">
                     <div class="d-flex gap-2 align-items-center">
                         <div><BanknoteArrowDown :size="20"/></div>

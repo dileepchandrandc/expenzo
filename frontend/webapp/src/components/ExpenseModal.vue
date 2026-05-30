@@ -3,8 +3,24 @@ import { getFormattedDate, getPaymentChannelLabel } from '../utils';
 import CleanModal from './clean/components/CleanModal.vue';
 import type { ExpenseModalProps } from './props';
 import { Edit, Trash, TriangleAlert } from 'lucide-vue-next';
+import { deleteTransaction } from '../api';
 
 const props: ExpenseModalProps = defineProps<ExpenseModalProps>();
+const emit = defineEmits<{
+  deleted: []
+}>();
+
+const handleDelete = async () => {
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    try {
+      await deleteTransaction(props.expense.id);
+      emit('deleted');
+      props.onClose();
+    } catch (err) {
+      console.error("Failed to delete transaction:", err);
+    }
+  }
+}
 </script>
 <template>
     <CleanModal v-on:close="props.onClose">
@@ -46,7 +62,7 @@ const props: ExpenseModalProps = defineProps<ExpenseModalProps>();
             </div>
             <div class="options-container">
                 <button class="edit-button"><Edit :size="15"/> Edit</button>
-                <button class="delete-button"><Trash :size="15"/> Delete</button>
+                <button class="delete-button" @click="handleDelete"><Trash :size="15"/> Delete</button>
             </div>
         </div>
     </CleanModal>

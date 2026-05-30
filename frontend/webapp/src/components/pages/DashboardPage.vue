@@ -26,18 +26,22 @@ const closeAddTransactionModal = () => {
     addtransactionModal.value = false
 }
 
-onMounted(async () => {
+const refreshData = async () => {
     try {
         const current = getCurrentYearAndMonth();
         monthlyOverView.value = await getMonthlyOverview(current.year, current.month);
     } catch(err) {
         console.error("API error:", err);
     }
+}
+
+onMounted(async () => {
+    await refreshData();
 });
 </script>
 
 <template>
-    <AddTransactionModal v-if="addtransactionModal" v-on:close="closeAddTransactionModal"/>
+    <AddTransactionModal v-if="addtransactionModal" @close="closeAddTransactionModal" @saved="refreshData"/>
     <div class="dashboard-page container-fluid">
         <div class="d-flex justify-content-between">
             <div class="page-title">Dashboard</div>

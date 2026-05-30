@@ -22,7 +22,8 @@ public class SqlQueries {
                 left join monthly_budget_expense_category mbec on mbec.category_id  = ec.id 
                 left join monthly_budget mb on mb.id  = mbec.budget_id
             where
-                t.user_id  = ?
+                t.type = 'EXPENSE'
+                and t.user_id  = ?
                 and t.timestamp >= ?
                 and t.timestamp <= ?
             group by t.expense_category_id, ec."name", mbec.spend_limit, mb.id, mb."name", ec.id

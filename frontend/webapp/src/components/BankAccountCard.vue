@@ -3,6 +3,9 @@ import { Edit3, LandmarkIcon, Trash2 } from 'lucide-vue-next';
 import type { BankAccountCardProps } from './props';
 
 const props = defineProps<BankAccountCardProps>();
+const emit = defineEmits<{
+  delete: [id: number]
+}>();
 </script>
 <template>
     <div class="bank-account-card d-flex flex-column">
@@ -20,7 +23,7 @@ const props = defineProps<BankAccountCardProps>();
             </div>
             <div class="d-flex gap-2">
                 <button class="bank-account-action-button"><Edit3 :size="15"/></button>
-                <button class="bank-account-action-button"><Trash2 :size="15"/></button>
+                <button class="bank-account-action-button" @click="emit('delete', props.bankAccount.id)"><Trash2 :size="15"/></button>
             </div>
         </div>
     </div>

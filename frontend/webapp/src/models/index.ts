@@ -101,3 +101,61 @@ export interface BudgetCategory {
     budgetUsage: number;
     partOfBudget: boolean;
 }
+
+// Payment Channel CRUD types
+export interface AddBankAccountRequest {
+    bankId: number;
+    nickName: string;
+}
+
+export interface AddCreditCardRequest {
+    bankAccountId: number;
+    limit: number;
+    currentOutStanding: number;
+    billingDate: number;
+}
+
+export interface AddDebitCardRequest {
+    bankAccountId: number;
+}
+
+// Transaction CRUD types
+export interface AddTransactionRequest {
+    type: 'EXPENSE' | 'INCOME' | 'SELF_TRANSFER';
+    amount: number;
+    title: string;
+    description?: string;
+    timestamp: string;
+    sourceType?: string;
+    sourceId?: number;
+    destType?: string;
+    destId?: number;
+    metaData?: {
+        expenseCategoryId?: number;
+    };
+}
+
+// Budget CRUD types
+export interface CategoryLimit {
+    categoryId: number;
+    spendLimit: number;
+}
+
+export interface CreateBudgetRequest {
+    name: string;
+    spendLimit: number;
+    categoryLimits: CategoryLimit[];
+}
+
+export interface BudgetResponse {
+    id: number;
+    name: string;
+    spendLimit: number;
+    categories: BudgetCategoryResponse[];
+}
+
+export interface BudgetCategoryResponse {
+    categoryId: number;
+    categoryName: string;
+    spendLimit: number;
+}

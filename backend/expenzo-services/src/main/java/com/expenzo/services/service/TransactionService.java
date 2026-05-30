@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.expenzo.services.dto.transaction.AddTransactionRequest;
+import com.expenzo.services.dto.transaction.TransactionDto;
 import com.expenzo.services.enums.TransactionType;
 import com.expenzo.services.exception.InvalidExpenseCategoryException;
 import com.expenzo.services.exception.InvalidTransactioException;
@@ -49,6 +50,18 @@ public class TransactionService {
         applyChanges(transaction, request);
         if (transaction == null) throw new InvalidTransactioException("Invalid transaction");
         transactionRepository.save(transaction);
+    }
+
+    public TransactionDto getTransaction(Integer userId, Integer id) {
+        Transaction transaction = transactionRepository.findByUserIdAndId(userId, id)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction not found with id: " + id));
+        return toTransactionDto(transaction);
+    }
+
+    public void deleteTransaction(Integer userId, Integer id) {
+        Transaction transaction = transactionRepository.findByUserIdAndId(userId, id)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction not found with id: " + id));
+        transactionRepository.delete(transaction);
     }
 
     private void validateTransactionRequest(Integer userId, AddTransactionRequest request) {
@@ -100,6 +113,21 @@ public class TransactionService {
                 .sourceType(request.getSourceType())
                 .destId(request.getDestId())
                 .destType(request.getDestType())
+                .build();
+    }
+
+    private TransactionDto toTransactionDto(Transaction transaction) {
+        return TransactionDto.builder()
+                .id(transaction.getId())
+                .type(transaction.getType())
+                .amount(transaction.getAmount())
+                .title(transaction.getTitle())
+                .description(transaction.getDescription())
+                .timestamp(transaction.getTimestamp())
+                .sourceType(transaction.getSourceType())
+                .sourceId(transaction.getSourceId())
+                .destType(transaction.getDestType())
+                .destId(transaction.getDestId())
                 .build();
     }
 }

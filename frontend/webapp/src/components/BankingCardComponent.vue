@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { CreditCard, Edit3, Trash2 } from 'lucide-vue-next';
 import type { BankingCardComponentProps } from './props';
+import type { BankingCard } from '../models';
 
 const porp = defineProps<BankingCardComponentProps>();
-
+const emit = defineEmits<{
+  delete: [card: BankingCard]
+}>();
 </script>
 <template>
     <div class="banking-card">
@@ -23,7 +26,7 @@ const porp = defineProps<BankingCardComponentProps>();
             </div>
             <div class="d-flex gap-2">
                 <button class="banking-card-action-button"><Edit3 :size="15"/></button>
-                <button class="banking-card-action-button"><Trash2 :size="15"/></button>
+                <button class="banking-card-action-button" @click="emit('delete', porp.bankingCard)"><Trash2 :size="15"/></button>
             </div>
         </div>
     </div>

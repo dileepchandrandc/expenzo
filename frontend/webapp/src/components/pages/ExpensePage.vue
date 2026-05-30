@@ -19,6 +19,7 @@ interface ExpenseModalState {
 
 const categories: Ref<ExpenseCategory[]> = ref<ExpenseCategory[]>([]);
 const buckets: Ref<ExpenseBucket[]> = ref<ExpenseBucket[]>([]);
+const refreshKey = ref(0);
 const pageState: Ref<PageState> = ref({
   page: 0,
   size: 10,
@@ -43,6 +44,11 @@ const selectExpense = (expense: Expense) => {
 const closeExpenseModal = () => {
   showExpenseModal.value.expense = undefined;
   showExpenseModal.value.show = false;
+}
+
+const handleExpenseDeleted = () => {
+  refreshKey.value++;
+  closeExpenseModal();
 }
 </script>
 
@@ -70,8 +76,8 @@ const closeExpenseModal = () => {
         <div>₹100</div>
       </div>
     </div>
-    <ExpenseListView v-if="pageState.bucket != undefined" :year="pageState.bucket?.year" :month="pageState.bucket?.month" :category-id="pageState.category?.id" :select-expense="selectExpense"/>
-    <ExpenseModal v-if="showExpenseModal.show && showExpenseModal.expense != undefined" :expense="showExpenseModal.expense" v-on:close="closeExpenseModal"/>
+    <ExpenseListView v-if="pageState.bucket != undefined" :key="refreshKey" :year="pageState.bucket?.year" :month="pageState.bucket?.month" :category-id="pageState.category?.id" :select-expense="selectExpense"/>
+    <ExpenseModal v-if="showExpenseModal.show && showExpenseModal.expense != undefined" :expense="showExpenseModal.expense" @close="closeExpenseModal" @deleted="handleExpenseDeleted"/>
   </div>
 </template>
 
