@@ -4,6 +4,8 @@ import { onMounted, ref, type Ref } from 'vue';
 import { getExpenseCategories, getExpenseBuckets } from '../../api';
 import ExpenseListView from '../ExpenseListView.vue';
 import ExpenseModal from '../ExpenseModal.vue';
+import { Upload } from 'lucide-vue-next';
+import UploadTransactionsFileModal from '../UploadTransactionsFileModal.vue';
 
 interface PageState {
   bucket?: ExpenseBucket;
@@ -28,6 +30,7 @@ const pageState: Ref<PageState> = ref({
 const showExpenseModal: Ref<ExpenseModalState> = ref({
   show: false
 });
+const showUploadExpensesModal = ref(false);
 
 onMounted(async () => {
   categories.value = await getExpenseCategories();
@@ -54,7 +57,15 @@ const handleExpenseDeleted = () => {
 
 <template>
   <div class="expense-page">
-    <div class="page-title">Expense</div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="page-title">Expense</div>
+      <button class="import-button" v-on:click="() => showUploadExpensesModal = true">
+          <div class="d-flex gap-2">
+            <Upload/>
+            <div>Import</div>
+          </div>
+      </button>
+    </div>    
     <div class="d-flex filter-bar gap-5">
       <!-- <CleanSearchBox hint-text="Search for expenses" class="filter-bar-item" bg-color="transparent"/> -->
       <div class="filter-bar-item d-flex">
@@ -78,6 +89,7 @@ const handleExpenseDeleted = () => {
     </div>
     <ExpenseListView v-if="pageState.bucket != undefined" :key="refreshKey" :year="pageState.bucket?.year" :month="pageState.bucket?.month" :category-id="pageState.category?.id" :select-expense="selectExpense"/>
     <ExpenseModal v-if="showExpenseModal.show && showExpenseModal.expense != undefined" :expense="showExpenseModal.expense" @close="closeExpenseModal" @deleted="handleExpenseDeleted"/>
+    <UploadTransactionsFileModal v-if="showUploadExpensesModal" @close="showUploadExpensesModal = false"/>
   </div>
 </template>
 
@@ -117,5 +129,11 @@ const handleExpenseDeleted = () => {
     outline: none;
     background-color: transparent;
     width: 100%;
+}
+
+.import-button {
+  padding: 0.25rem;
+  border: 1px solid grey;
+  border-radius: 10px;
 }
 </style>

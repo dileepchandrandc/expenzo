@@ -154,3 +154,13 @@ export const updateMyBudget = async (data: CreateBudgetRequest): Promise<BudgetR
 export const deleteMyBudget = async (): Promise<void> => {
   await api.delete("/budget/my");
 }
+
+export const uploadExpenses = async(file: File, excludeDuplicates: boolean, duplicationStrategy: string) => {
+  const form: FormData = new FormData();
+  form.append('file', file);
+  form.append('removeDuplicates', String(excludeDuplicates));
+  form.append('duplicateMatchingStrategy', duplicationStrategy);
+  const res = await api.post("/expense/upload-file/CREDIT_CARD/2", form);
+  console.log(res.data)
+  return res.data;
+}
