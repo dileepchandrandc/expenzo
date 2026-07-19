@@ -1,1 +1,0 @@
-export {default as CleanHorizondalBar} from "./CleanHorizondalBar.vue";
