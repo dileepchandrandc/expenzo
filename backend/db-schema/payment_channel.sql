@@ -11,16 +11,10 @@
 -- Dependencies: user
 -- =============================================================================
 
-CREATE TYPE payment_channel_type_enum AS ENUM (
-    'BANK_ACCOUNT',
-    'DEBIT_CARD',
-    'CREDIT_CARD'
-);
-
 CREATE TABLE payment_channel (
     id           VARCHAR(36)               NOT NULL PRIMARY KEY,
     user_id      VARCHAR(36)               NOT NULL,
-    channel_type payment_channel_type_enum NOT NULL,
+    channel_type VARCHAR(15)  NOT NULL CHECK (channel_type IN ('BANK_ACCOUNT', 'DEBIT_CARD', 'CREDIT_CARD')),
     channel_id   VARCHAR(36)               NOT NULL,
     created_at   TIMESTAMPTZ               NOT NULL DEFAULT now(),
     updated_at   TIMESTAMPTZ               NOT NULL DEFAULT now(),

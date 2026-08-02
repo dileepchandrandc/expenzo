@@ -6,13 +6,6 @@
 -- Dependencies: user, payment_channel
 -- =============================================================================
 
-CREATE TYPE transaction_type_enum AS ENUM (
-    'EXPENSE',
-    'INCOME',
-    'SELF_TRANSFER',
-    'INVESTMENT'
-);
-
 CREATE TABLE transaction (
     id             VARCHAR(36)           NOT NULL PRIMARY KEY,
     user_id        VARCHAR(36)           NOT NULL,
@@ -20,7 +13,7 @@ CREATE TABLE transaction (
     amount         NUMERIC(12, 2)        NOT NULL CHECK (amount > 0),
     title          VARCHAR(100)          NOT NULL,
     notes          VARCHAR(255),
-    type           transaction_type_enum NOT NULL,
+    type           VARCHAR(15)    NOT NULL CHECK (type IN ('EXPENSE', 'INCOME', 'SELF_TRANSFER', 'INVESTMENT')),
     source_channel VARCHAR(36)           NOT NULL,
     dest_channel   VARCHAR(36),
     created_at     TIMESTAMPTZ           NOT NULL DEFAULT now(),

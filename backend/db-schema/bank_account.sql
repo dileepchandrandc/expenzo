@@ -5,13 +5,11 @@
 -- Dependencies: user, bank
 -- =============================================================================
 
-CREATE TYPE account_type_enum AS ENUM ('SAVINGS', 'CURRENT');
-
 CREATE TABLE bank_account (
     id             VARCHAR(36)       NOT NULL PRIMARY KEY,
     user_id        VARCHAR(36)       NOT NULL,
     bank_id        VARCHAR(36)       NOT NULL,
-    account_type   account_type_enum NOT NULL,
+    account_type   VARCHAR(10)  NOT NULL CHECK (account_type IN ('SAVINGS', 'CURRENT')),
     account_number VARCHAR(50)       NOT NULL UNIQUE,
     nick_name      VARCHAR(50),
     created_at     TIMESTAMPTZ       NOT NULL DEFAULT now(),
