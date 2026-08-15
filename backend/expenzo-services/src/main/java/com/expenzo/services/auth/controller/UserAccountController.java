@@ -3,7 +3,6 @@ package com.expenzo.services.auth.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,24 +35,24 @@ public class UserAccountController {
         return userAccountService.create(request);
     }
 
-    @PutMapping("/{userId}")
-    public UserAccount update(@PathVariable String userId, @Valid @RequestBody UpdateUserRequest request) {
-        return userAccountService.update(userId, request);
+    @PutMapping
+    public UserAccount update(@Valid @RequestBody UpdateUserRequest request) {
+        return userAccountService.update(request);
     }
 
-    @PutMapping("/{userId}/change-password")
-    public void changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequest request) {
-        userAccountService.changePassword(userId, request);
+    @PutMapping("/change-password")
+    public void changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        userAccountService.changePassword(request);
     }
 
-    @GetMapping("/{userId}")
-    public UserAccount get(@PathVariable String userId) {
-        return userAccountService.get(userId);
+    @GetMapping
+    public UserAccount get() {
+        return userAccountService.get();
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String userId) {
-        userAccountService.delete(userId);
+    public void delete() {
+        userAccountService.delete();
     }
 }

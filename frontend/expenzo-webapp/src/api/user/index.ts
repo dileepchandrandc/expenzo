@@ -38,18 +38,18 @@ export function createUserApi(payload: CreateUserRequest) {
   return apiClient.post('/user', payload);
 }
 
-export function getUserApi(userId: string) {
-  return apiClient.get<UserAccount>(`/user/${userId}`);
+export function getUserApi() {
+  return apiClient.get<UserAccount>('/user');
 }
 
-export function updateUserApi(userId: string, payload: UpdateUserRequest) {
-  return apiClient.put<UserAccount>(`/user/${userId}`, payload);
+export function updateUserApi(payload: UpdateUserRequest) {
+  return apiClient.put<UserAccount>('/user', payload);
 }
 
-export function deleteUserApi(userId: string) {
-  return apiClient.delete(`/user/${userId}`);
+export function deleteUserApi() {
+  return apiClient.delete('/user');
 }
 
-export function changePasswordApi(userId: string, payload: ChangePasswordRequest) {
-  return apiClient.put(`/user/${userId}/change-password`, payload);
+export function changePasswordApi(payload: ChangePasswordRequest) {
+  return apiClient.put('/user/change-password', payload);
 }

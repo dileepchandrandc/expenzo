@@ -2,8 +2,10 @@
 import { ref } from 'vue';
 import AppLogo from '../components/AppLogo.vue';
 import { useAuth } from '../composables/useAuth';
+import { useRouter } from 'vue-router';
 
 const { login } = useAuth();
+const router = useRouter();
 
 const email = ref('');
 const password = ref('');
@@ -24,9 +26,7 @@ const handleLogin = async () => {
     // Store userId from JWT — we can extract it from the token
     const tokenPayload = JSON.parse(atob(result.accessToken.split('.')[1]));
     localStorage.setItem('userId', tokenPayload.sub);
-
-    // For now show success — no dashboard yet
-    alert('Login successful!');
+    router.push("/dashboard");
   } catch (err: unknown) {
     if (err && typeof err === 'object' && 'response' in err) {
       const axiosErr = err as { response?: { data?: { error?: string } } };

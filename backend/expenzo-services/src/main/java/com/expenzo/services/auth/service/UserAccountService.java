@@ -1,6 +1,8 @@
 package com.expenzo.services.auth.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +43,8 @@ public class UserAccountService {
         return toUserAccount(user);
     }
 
-    public UserAccount update(String userId, UpdateUserRequest request) {
-        ExpenzoUser user = userRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    public UserAccount update(UpdateUserRequest request) {
+        ExpenzoUser user = findCurrentUser();
 
         if (request.getFirstName() != null) {
             user.setFirstName(request.getFirstName());
@@ -62,22 +63,17 @@ public class UserAccountService {
         return toUserAccount(user);
     }
 
-    public UserAccount get(String userId) {
-        ExpenzoUser user = userRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-        return toUserAccount(user);
+    public UserAccount get() {
+        return toUserAccount(findCurrentUser());
     }
 
-    public void delete(String userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("User not found with id: " + userId);
-        }
-        userRepository.deleteById(userId);
+    public void delete() {
+        ExpenzoUser user = findCurrentUser();
+        userRepository.delete(user);
     }
 
-    public void changePassword(String userId, ChangePasswordRequest request) {
-        ExpenzoUser user = userRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    public void changePassword(ChangePasswordRequest request) {
+        ExpenzoUser user = findCurrentUser();
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Old password is incorrect");
@@ -85,6 +81,17 @@ public class UserAccountService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    private ExpenzoUser findCurrentUser() {
+        String userId = getCurrentUserId();
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    }
+
+    private String getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 
     private UserAccount toUserAccount(ExpenzoUser user) {
