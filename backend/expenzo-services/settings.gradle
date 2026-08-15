@@ -5,3 +5,7 @@ pluginManagement {
 	}
 }
 rootProject.name = 'expenzo-services'
+
+include 'expenzo-user-account-service'
+include 'expenzo-bank-account-service'
+include 'expenzo-app'

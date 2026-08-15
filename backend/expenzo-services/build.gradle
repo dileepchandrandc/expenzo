@@ -1,42 +1,33 @@
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.15-SNAPSHOT'
-	id 'io.spring.dependency-management' version '1.1.7'
-}
+// Root aggregator build for the expenzo-services multi-module project.
+// Each Spring Boot / library module is configured in its own build.gradle.
 
-group = 'com.expenzo'
-version = '0.0.1-SNAPSHOT'
+allprojects {
+	group = 'com.expenzo'
+	version = '0.0.1-SNAPSHOT'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+	repositories {
+		mavenCentral()
+		maven { url = 'https://repo.spring.io/snapshot' }
 	}
 }
 
-repositories {
-	mavenCentral()
-	maven { url = 'https://repo.spring.io/snapshot' }
-}
+subprojects {
+	apply plugin: 'java'
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'com.h2database:h2'
-	testCompileOnly 'org.projectlombok:lombok'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
-}
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(21)
+		}
+	}
 
-tasks.named('test') {
-	useJUnitPlatform()
+	tasks.withType(JavaCompile) {
+		options.encoding = 'UTF-8'
+		// Spring resolves method parameter names (e.g. @PathVariable, @RequestParam)
+		// from this flag; required across all subprojects.
+		options.compilerArgs += '-parameters'
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
 }
