@@ -1,7 +1,13 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.15-SNAPSHOT'
+	id 'java-library'
+	id 'org.springframework.boot' version '3.5.15-SNAPSHOT' apply false
 	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+	}
 }
 
 java {
@@ -16,23 +22,20 @@ repositories {
 }
 
 dependencies {
-	implementation project(':expenzo-user-account-service')
+	// Reuse PaginatedResponse + BankAccountRepository for ownership validation
 	implementation project(':expenzo-bank-account-service')
-	implementation project(':expenzo-payment-card-service')
+
+	// Expose annotation types to consumers
+	api 'jakarta.persistence:jakarta.persistence-api'
+	api 'org.springframework.data:spring-data-jpa'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
-
-	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'

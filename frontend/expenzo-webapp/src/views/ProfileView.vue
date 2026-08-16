@@ -7,16 +7,36 @@ import type { UserAccount } from '../api/user';
 
 // APIs
 import { getUserApi } from '../api/user';
-import { listBankAccountsApi, deleteBankAccountApi, type BankAccount } from '../api/bank';
-import AddBankAccountModal from '../components/AddBankAccountModal.vue';
-import EditBankAccountModal from '../components/EditBankAccountModal.vue';
+import {
+  listBankAccountsApi,
+  deleteBankAccountApi,
+  type BankAccount,
+} from '../api/bank';
+import {
+  listCreditCardsApi,
+  deleteCreditCardApi,
+  listDebitCardsApi,
+  deleteDebitCardApi,
+  type CreditCard,
+  type DebitCard,
+} from '../api/card';
+import PaymentChannelModal from '../components/PaymentChannelModal.vue';
 import BankAccountCard from '../components/BankAccountCard.vue';
+import PaymentCardRow from '../components/PaymentCardRow.vue';
 import { onMounted, ref } from 'vue';
 
 const userProfile = ref<UserAccount | null>(null);
 const bankAccounts = ref<BankAccount[]>([]);
+const debitCards = ref<DebitCard[]>([]);
+const creditCards = ref<CreditCard[]>([]);
 const showAddModal = ref(false);
-const editingAccount = ref<BankAccount | null>(null);
+
+type Editing = {
+  account?: BankAccount;
+  debitCard?: DebitCard;
+  creditCard?: CreditCard;
+} | null;
+const editing = ref<Editing>(null);
 
 const loadBankAccounts = async () => {
   try {
@@ -27,17 +47,49 @@ const loadBankAccounts = async () => {
   }
 };
 
-const onBankAccountSaved = () => {
+const loadDebitCards = async () => {
+  try {
+    const response = await listDebitCardsApi();
+    debitCards.value = response.data.content;
+  } catch {
+    debitCards.value = [];
+  }
+};
+
+const loadCreditCards = async () => {
+  try {
+    const response = await listCreditCardsApi();
+    creditCards.value = response.data.content;
+  } catch {
+    creditCards.value = [];
+  }
+};
+
+const reloadAll = () => {
+  loadBankAccounts();
+  loadDebitCards();
+  loadCreditCards();
+};
+
+const onEditAccount = (account: BankAccount) => {
+  editing.value = { account };
+};
+
+const onEditDebitCard = (card: CreditCard | DebitCard) => {
+  editing.value = { debitCard: card as DebitCard };
+};
+
+const onEditCreditCard = (card: CreditCard | DebitCard) => {
+  editing.value = { creditCard: card as CreditCard };
+};
+
+const onSaved = () => {
   showAddModal.value = false;
-  loadBankAccounts();
+  editing.value = null;
+  reloadAll();
 };
 
-const onBankAccountUpdated = () => {
-  editingAccount.value = null;
-  loadBankAccounts();
-};
-
-const handleDelete = async (account: BankAccount) => {
+const handleDeleteAccount = async (account: BankAccount) => {
   if (!confirm(`Delete ${account.nickName || account.bank.shortName}?`)) return;
   try {
     await deleteBankAccountApi(account.id);
@@ -47,9 +99,31 @@ const handleDelete = async (account: BankAccount) => {
   }
 };
 
+const handleDeleteDebitCard = async (card: DebitCard | CreditCard) => {
+  const debit = card as DebitCard;
+  if (!confirm(`Delete ${debit.nickName || 'Debit Card'}?`)) return;
+  try {
+    await deleteDebitCardApi(debit.id);
+    loadDebitCards();
+  } catch {
+    // Ignore for now; could surface an error
+  }
+};
+
+const handleDeleteCreditCard = async (card: CreditCard | DebitCard) => {
+  const credit = card as CreditCard;
+  if (!confirm(`Delete ${credit.nickName || 'Credit Card'}?`)) return;
+  try {
+    await deleteCreditCardApi(credit.id);
+    loadCreditCards();
+  } catch {
+    // Ignore for now; could surface an error
+  }
+};
+
 onMounted(async () => {
     userProfile.value = (await getUserApi()).data;
-    loadBankAccounts();
+    reloadAll();
 });
 
 </script>
@@ -117,14 +191,42 @@ onMounted(async () => {
                         <div class="payment-channels-subheading">Bank Accounts</div>
                         <div class="payment-channels-content">
                             <div v-if="bankAccounts.length === 0" class="payment-channels-empty">
-                                No payment channels added yet.
+                                No bank accounts added yet.
                             </div>
                             <BankAccountCard
                                 v-for="account in bankAccounts"
                                 :key="account.id"
                                 :account="account"
-                                @edit="editingAccount = $event"
-                                @delete="handleDelete"
+                                @edit="onEditAccount"
+                                @delete="handleDeleteAccount"
+                            />
+                        </div>
+                        <div class="payment-channels-subheading">Debit Cards</div>
+                        <div class="payment-channels-content">
+                            <div v-if="debitCards.length === 0" class="payment-channels-empty">
+                                No debit cards added yet.
+                            </div>
+                            <PaymentCardRow
+                                v-for="card in debitCards"
+                                :key="card.id"
+                                :card="card"
+                                kind="DEBIT"
+                                @edit="onEditDebitCard"
+                                @delete="handleDeleteDebitCard"
+                            />
+                        </div>
+                        <div class="payment-channels-subheading">Credit Cards</div>
+                        <div class="payment-channels-content">
+                            <div v-if="creditCards.length === 0" class="payment-channels-empty">
+                                No credit cards added yet.
+                            </div>
+                            <PaymentCardRow
+                                v-for="card in creditCards"
+                                :key="card.id"
+                                :card="card"
+                                kind="CREDIT"
+                                @edit="onEditCreditCard"
+                                @delete="handleDeleteCreditCard"
                             />
                         </div>
                     </div>
@@ -133,17 +235,21 @@ onMounted(async () => {
         </div>
     </div>
 
-    <AddBankAccountModal
+    <PaymentChannelModal
         v-if="showAddModal"
+        mode="create"
         @close="showAddModal = false"
-        @saved="onBankAccountSaved"
+        @saved="onSaved"
     />
 
-    <EditBankAccountModal
-        v-if="editingAccount"
-        :account="editingAccount"
-        @close="editingAccount = null"
-        @saved="onBankAccountUpdated"
+    <PaymentChannelModal
+        v-if="editing"
+        mode="edit"
+        :account="editing.account"
+        :debit-card="editing.debitCard"
+        :credit-card="editing.creditCard"
+        @close="editing = null"
+        @saved="onSaved"
     />
 </template>
 
